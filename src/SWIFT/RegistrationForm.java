@@ -4,25 +4,38 @@ import Config.Config;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 
-public class RegistrationForm extends javax.swing.JFrame {
+public class RegistrationForm extends javax.swing.JPanel { // Changed to JPanel
 
-    public RegistrationForm() {
+    private final DashboardForm dashboard;
+
+    // Updated Constructor
+    public RegistrationForm(DashboardForm parent) {
+        this.dashboard = parent;
         initComponents();
         customInit();
     }
 
-    private void customInit() {
-        this.setBackground(new Color(0, 0, 0, 0)); 
-        this.setLocationRelativeTo(null);
+private void customInit() {
+        // Panels are transparent to let the Dashboard background shine through
+        this.setOpaque(false);
+        
+        // Remove lines/frames from Submit Button
+        btnSubmit.setFocusPainted(false);
+        btnSubmit.setBorderPainted(false);
+        btnSubmit.setContentAreaFilled(false);
+        
+        // Remove lines/frames from Admin Button
+        btnAdminReg.setFocusPainted(false);
+        btnAdminReg.setBorderPainted(false);
+        btnAdminReg.setContentAreaFilled(false);
+        
+        // Remove lines/frames from Back Button
+        btnBack.setFocusPainted(false);
+        btnBack.setBorderPainted(false);
+        btnBack.setContentAreaFilled(false);
         
         RegisterGIF.setVisible(false);
         RegisterGIF.setFocusable(false);
-        
-        // Ensure buttons are on top of images
-        getContentPane().setComponentZOrder(btnSubmit, 0);
-        getContentPane().setComponentZOrder(btnAdminReg, 0); 
-        getContentPane().setComponentZOrder(RegisterGIF, 1);
-        getContentPane().setComponentZOrder(Background, getContentPane().getComponentCount() - 1);
     }
 
     private void handleRegistration(boolean isAdminRequest) {
@@ -51,8 +64,8 @@ public class RegistrationForm extends javax.swing.JFrame {
         
         if (success) {
             JOptionPane.showMessageDialog(this, role + " Registered Successfully!");
-            new LoginForm().setVisible(true);
-            this.dispose();
+            // Switch back to Login panel inside the same window
+            dashboard.showLogin(); 
         } else {
             JOptionPane.showMessageDialog(this, "Registration Failed!", "Database Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -79,42 +92,44 @@ public class RegistrationForm extends javax.swing.JFrame {
         RegisterStatic = new javax.swing.JLabel();
         Background = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
-        setResizable(false);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Visitor TT1 BRK", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Full Name:");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 100, 100, 30));
-        getContentPane().add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 100, 170, 25));
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, 100, 30));
+        add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 60, 160, 25));
 
-        jLabel2.setFont(new java.awt.Font("Visitor TT1 BRK", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Email:");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 140, 100, 30));
-        getContentPane().add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 140, 170, 25));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 100, 100, 30));
+        add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 100, 160, 25));
 
-        jLabel3.setFont(new java.awt.Font("Visitor TT1 BRK", 1, 14)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Password:");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 180, 100, 30));
-        getContentPane().add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 180, 170, 25));
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 140, 100, 30));
+        add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 140, 160, 25));
 
-        jLabel4.setFont(new java.awt.Font("Visitor TT1 BRK", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Contact:");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 220, 100, 30));
-        getContentPane().add(txtContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 220, 170, 25));
+        add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 180, 100, 30));
+        add(txtContact, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 180, 160, 25));
 
-        jLabel6.setFont(new java.awt.Font("Visitor TT1 BRK", 1, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Role:");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 260, 100, 30));
+        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 220, 100, 30));
 
         comboRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Catering Manager", "Chef/Cook", "Waitstaff/Server", "Bartender", "Kitchen Assistant", "Event Coordinator" }));
-        getContentPane().add(comboRole, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 260, 170, 25));
+        comboRole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboRoleActionPerformed(evt);
+            }
+        });
+        add(comboRole, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 220, 120, 25));
 
         btnSubmit.setContentAreaFilled(false);
         btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -134,7 +149,7 @@ public class RegistrationForm extends javax.swing.JFrame {
                 btnSubmitActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSubmit, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 320, 160, 40));
+        add(btnSubmit, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 260, 130, 40));
 
         btnAdminReg.setFont(new java.awt.Font("Segoe UI", 3, 10)); // NOI18N
         btnAdminReg.setForeground(new java.awt.Color(153, 255, 255));
@@ -146,7 +161,7 @@ public class RegistrationForm extends javax.swing.JFrame {
                 btnAdminRegActionPerformed(evt);
             }
         });
-        getContentPane().add(btnAdminReg, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 410, 120, 30));
+        add(btnAdminReg, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 30, 140, 30));
 
         btnBack.setFont(new java.awt.Font("Visitor TT1 BRK", 0, 12)); // NOI18N
         btnBack.setForeground(new java.awt.Color(204, 204, 204));
@@ -158,23 +173,21 @@ public class RegistrationForm extends javax.swing.JFrame {
                 btnBackActionPerformed(evt);
             }
         });
-        getContentPane().add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 380, 120, 20));
+        add(btnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 310, 120, 20));
 
         RegisterGIF.setIcon(new javax.swing.ImageIcon(getClass().getResource("/login.image/Register.gif"))); // NOI18N
-        getContentPane().add(RegisterGIF, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 310, 200, 60));
+        add(RegisterGIF, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 250, 170, 60));
 
         RegisterStatic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/login.image/Register.png"))); // NOI18N
-        getContentPane().add(RegisterStatic, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 320, 200, 50));
+        add(RegisterStatic, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 260, -1, 50));
 
-        Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/login.image/Background1.png"))); // NOI18N
-        getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, -20, 740, 520));
-
-        pack();
+        Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/login.image/bg2.png"))); // NOI18N
+        add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, -80, 740, 520));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+    private void comboRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboRoleActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnSubmitActionPerformed
+    }//GEN-LAST:event_comboRoleActionPerformed
 
     private void btnSubmitMouseClicked(java.awt.event.MouseEvent evt) {                                       
         handleRegistration(false);
@@ -195,13 +208,11 @@ public class RegistrationForm extends javax.swing.JFrame {
     }                                           
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {                                        
-        new LoginForm().setVisible(true); 
-        this.dispose();
+        // Navigate back to Login panel
+        dashboard.showLogin(); 
     }                                       
 
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new RegistrationForm().setVisible(true));
-    }
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Background;

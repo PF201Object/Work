@@ -8,56 +8,46 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public final class BookingRecords extends javax.swing.JPanel {
+public final class EventRecords extends javax.swing.JPanel {
 
-    public BookingRecords() {
+    public EventRecords() {
         initComponents();
         setOpaque(false);
-        applyDashboardTheme(); // Styling logic
-        loadBookingData();     // Secured Data logic
+        applyDashboardTheme(); 
+        loadEventData();
     }
 
     private void applyDashboardTheme() {
-        // 1. Setup ScrollPane: Remove all borders and make it see-through
         tableScroll.setBorder(new EmptyBorder(0, 0, 0, 0));
         tableScroll.setOpaque(false);
         tableScroll.getViewport().setOpaque(false);
-        tableScroll.setViewportBorder(null);
 
-        // 2. Table Styling: "Faded Black" Glassmorphism
-        tblBookings.setRowHeight(35);
-        tblBookings.setShowGrid(false);
-        tblBookings.setIntercellSpacing(new Dimension(0, 0));
+        tblEvents.setRowHeight(35);
+        tblEvents.setShowGrid(false);
+        tblEvents.setIntercellSpacing(new Dimension(0, 0));
+        tblEvents.setBackground(new Color(15, 15, 15, 40)); 
+        tblEvents.setForeground(new Color(220, 220, 220)); 
+        tblEvents.setSelectionBackground(new Color(255, 255, 255, 30)); 
         
-        // This is the "Faded Black" (Deep Grey/Black with high transparency)
-        tblBookings.setBackground(new Color(15, 15, 15, 40)); 
-        tblBookings.setForeground(new Color(220, 220, 220)); // Soft White text
-        tblBookings.setSelectionBackground(new Color(255, 255, 255, 30)); // Subtle highlight
-        tblBookings.setSelectionForeground(Color.WHITE);
+        tblEvents.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        tblEvents.getTableHeader().setBackground(new Color(25, 25, 25)); 
+        tblEvents.getTableHeader().setForeground(new Color(180, 180, 180));
         
-        // 3. Header Styling: Solid but matching the faded theme
-        tblBookings.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
-        tblBookings.getTableHeader().setBackground(new Color(25, 25, 25)); // Slightly darker header
-        tblBookings.getTableHeader().setForeground(new Color(180, 180, 180));
-        tblBookings.getTableHeader().setBorder(new EmptyBorder(0,0,0,0));
-        
-        // 4. Align text to center for a cleaner look
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        centerRenderer.setOpaque(false); // Keeps the renderer transparent
-        tblBookings.setDefaultRenderer(Object.class, centerRenderer);
+        centerRenderer.setOpaque(false); 
+        tblEvents.setDefaultRenderer(Object.class, centerRenderer);
     }
 
-    public void loadBookingData() {
-        String[] columnNames = {"Booking ID", "Member Name", "Event/Equip ID", "Date", "Status", "Amount"};
+    public void loadEventData() {
+        String[] columnNames = {"ID", "Event Name", "Type", "Date", "Location", "Guests"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
         };
 
-        String sql = "SELECT b.b_id, u.u_name, b.e_id, b.b_date, b.b_status, b.total_amount " +
-                     "FROM Booking b " +
-                     "LEFT JOIN user u ON b.u_id = u.u_id";
+        // SQL using fields from your second ERD image
+        String sql = "SELECT e_id, e_name, e_type, s_date, e_location, e_guest FROM event";
 
         try (Connection conn = Config.connect();
              PreparedStatement pst = conn.prepareStatement(sql);
@@ -65,15 +55,15 @@ public final class BookingRecords extends javax.swing.JPanel {
 
             while (rs.next()) {
                 model.addRow(new Object[]{
-                    rs.getInt("b_id"),
-                    rs.getString("u_name"),
                     rs.getInt("e_id"),
-                    rs.getString("b_date"),
-                    rs.getString("b_status"),
-                    "₱ " + rs.getDouble("total_amount")
+                    rs.getString("e_name"),
+                    rs.getString("e_type"),
+                    rs.getString("s_date"),
+                    rs.getString("e_location"),
+                    rs.getInt("e_guest")
                 });
             }
-            tblBookings.setModel(model);
+            tblEvents.setModel(model);
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage());
@@ -84,14 +74,8 @@ public final class BookingRecords extends javax.swing.JPanel {
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        // The "Faded Black" container background
-        // Parameters: (R, G, B, Alpha) -> 160 is a nice "faded" transparency
         g2.setColor(new Color(10, 10, 10, 160)); 
-        
-        // Match these coordinates to your layout: (x, y, width, height, arcWidth, arcHeight)
         g2.fillRoundRect(25, 75, 550, 260, 30, 30); 
-        
         g2.dispose();
         super.paintComponent(g);
     }
@@ -102,20 +86,20 @@ public final class BookingRecords extends javax.swing.JPanel {
 
         lblTitle = new javax.swing.JLabel();
         tableScroll = new javax.swing.JScrollPane();
-        tblBookings = new javax.swing.JTable();
+        tblEvents = new javax.swing.JTable();
 
         setOpaque(false);
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblTitle.setFont(new java.awt.Font("SansSerif", 1, 24)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(255, 255, 255));
-        lblTitle.setText("BOOKINGS");
+        lblTitle.setText("EVENT RECORDS");
         add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, 290, 30));
 
         tableScroll.setBorder(null);
         tableScroll.setOpaque(false);
 
-        tblBookings.setModel(new javax.swing.table.DefaultTableModel(
+        tblEvents.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -123,8 +107,7 @@ public final class BookingRecords extends javax.swing.JPanel {
 
             }
         ));
-        tblBookings.setIntercellSpacing(new java.awt.Dimension(0, 0));
-        tableScroll.setViewportView(tblBookings);
+        tableScroll.setViewportView(tblEvents);
 
         add(tableScroll, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 530, 240));
     }// </editor-fold>//GEN-END:initComponents
@@ -132,6 +115,6 @@ public final class BookingRecords extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblTitle;
     private javax.swing.JScrollPane tableScroll;
-    private javax.swing.JTable tblBookings;
+    private javax.swing.JTable tblEvents;
     // End of variables declaration//GEN-END:variables
 }
