@@ -171,15 +171,15 @@ public Serve() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExitMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExitMouseEntered
-        // TODO add your handling code here:
+       btnExit.setForeground(new Color(255, 102, 0));             
     }//GEN-LAST:event_btnExitMouseEntered
 
     private void btnExitMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExitMouseExited
-        // TODO add your handling code here:
+       btnExit.setForeground(Color.WHITE);
     }//GEN-LAST:event_btnExitMouseExited
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        // TODO add your handling code here:
+       System.exit(0);
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {

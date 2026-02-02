@@ -14,6 +14,36 @@ public class Config {
         }
     }
 
+    /**
+     * NEW: Checks if a name already exists in either the admin or user table.
+     * This prevents "Double Accounts" as requested.
+     */
+    public static boolean isUserExists(String name) {
+        // Check Admin Table
+        String adminCheck = "SELECT COUNT(*) FROM admin WHERE a_username = ?";
+        // Check User Table
+        String userCheck = "SELECT COUNT(*) FROM user WHERE u_name = ?";
+
+        try (Connection conn = connect()) {
+            // Check admins first
+            try (PreparedStatement pstmt = conn.prepareStatement(adminCheck)) {
+                pstmt.setString(1, name);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) return true;
+            }
+            
+            // Then check users
+            try (PreparedStatement pstmt = conn.prepareStatement(userCheck)) {
+                pstmt.setString(1, name);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void initializeDB() {
         String userTable = "CREATE TABLE IF NOT EXISTS user ("
                    + "u_id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -57,7 +87,6 @@ public class Config {
     }
 
     public static String getUserRole(String username, String password) {
-        // 1. Check Admin Table
         String adminSql = "SELECT 'Admin' as role FROM admin WHERE a_username = ? AND a_password = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(adminSql)) {
             pstmt.setString(1, username);
@@ -66,7 +95,6 @@ public class Config {
             if (rs.next()) return "Admin";
         } catch (SQLException e) { e.printStackTrace(); }
 
-        // 2. Check User Table
         String userSql = "SELECT u_role FROM user WHERE u_name = ? AND u_password = ? AND status = 'Active'";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(userSql)) {
             pstmt.setString(1, username);
@@ -78,26 +106,21 @@ public class Config {
         return null; 
     }
 
-    /**
-     * UPDATED: Routes registration to the correct table based on role.
-     */
     public static boolean registerUser(String name, String email, String pass, String contact, String role, String status) {
         String sql;
         
         if ("Admin".equalsIgnoreCase(role)) {
-            // Insert into ADMIN table
             sql = "INSERT INTO admin(a_username, a_password, a_email) VALUES(?,?,?)";
             try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, name);     // Using 'name' as a_username
-                pstmt.setString(2, pass);     // a_password
-                pstmt.setString(3, email);    // a_email
+                pstmt.setString(1, name);
+                pstmt.setString(2, pass);
+                pstmt.setString(3, email);
                 return pstmt.executeUpdate() > 0;
             } catch (SQLException e) {
                 e.printStackTrace();
                 return false;
             }
         } else {
-            // Insert into USER table
             sql = "INSERT INTO user(u_name, u_email, u_password, u_contact, u_role, status) VALUES(?,?,?,?,?,?)";
             try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, name);
@@ -114,8 +137,6 @@ public class Config {
         }
     }
 
-    // This method is now redundant because getUserRole covers it, 
-    // but kept for compatibility with existing forms.
     public static boolean validateLogin(String username, String password) {
         return getUserRole(username, password) != null;
     }

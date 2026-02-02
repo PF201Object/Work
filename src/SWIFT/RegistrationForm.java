@@ -38,7 +38,7 @@ private void customInit() {
         RegisterGIF.setFocusable(false);
     }
 
-    private void handleRegistration(boolean isAdminRequest) {
+        private void handleRegistration(boolean isAdminRequest) {
         String name = txtName.getText().trim();
         String email = txtEmail.getText().trim();
         String password = new String(txtPassword.getPassword());
@@ -46,11 +46,33 @@ private void customInit() {
         String role = isAdminRequest ? "Admin" : comboRole.getSelectedItem().toString();
         String status = "Active";
 
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill required fields!", "Error", JOptionPane.ERROR_MESSAGE);
+        // 1. Basic Empty Validation
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || contact.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all required fields!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        // 2. Email Validation (Must contain @)
+        if (!email.contains("@") || !email.contains(".")) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid Email address!", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 3. Contact Number Validation (Must be exactly 11 digits)
+        // matches("\\d{11}") checks if the string contains only numbers and is 11 chars long
+        if (!contact.matches("\\d{11}")) {
+            JOptionPane.showMessageDialog(this, "Contact number must be exactly 11 digits!", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 4. Double Account Validation (Same Name)
+        // Note: You need to implement 'isUserExists' in your Config class
+        if (Config.isUserExists(name)) {
+            JOptionPane.showMessageDialog(this, "An account with this name already exists!", "Registration Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // 5. Admin Key Logic
         if (isAdminRequest) {
             String key = JOptionPane.showInputDialog(this, "Enter Admin Registration Key:", "Authentication", JOptionPane.WARNING_MESSAGE);
             if (!"Admin123".equals(key)) {
@@ -64,7 +86,6 @@ private void customInit() {
         
         if (success) {
             JOptionPane.showMessageDialog(this, role + " Registered Successfully!");
-            // Switch back to Login panel inside the same window
             dashboard.showLogin(); 
         } else {
             JOptionPane.showMessageDialog(this, "Registration Failed!", "Database Error", JOptionPane.ERROR_MESSAGE);
