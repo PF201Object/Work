@@ -49,7 +49,7 @@ public class LoginForm extends javax.swing.JPanel { // Changed to JPanel
 
                 java.awt.EventQueue.invokeLater(() -> {
                     // SECURED TRANSITION: Tells the Dashboard login was successful
-                    dashboard.loginSuccess(role); 
+                    dashboard.loginSuccess(username, role); 
                 });
             }).start();
         } else {

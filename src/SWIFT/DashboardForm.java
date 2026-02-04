@@ -11,13 +11,14 @@ import javax.swing.JButton;
 public final class DashboardForm extends javax.swing.JFrame {
 
     // Internal Panels
+    private String currentUsername;     
     private UserRecords userPanel;
     private BookingRecords bookingPanel;
     private MenuRecords menuPanel;
     private EventRecords eventPanel;
     private LoginForm loginPanel; 
     private RegistrationForm registerPanel;
-    
+    private Profile profilePanel;
     private final int homeOriginalY;
     private String userRole = "Guest"; 
     private int mouseX, mouseY;
@@ -51,6 +52,7 @@ public final class DashboardForm extends javax.swing.JFrame {
         });
 
         // Initialize Panels
+        profilePanel = new Profile();
         userPanel = new UserRecords();
         bookingPanel = new BookingRecords();
         menuPanel = new MenuRecords();
@@ -65,6 +67,7 @@ public final class DashboardForm extends javax.swing.JFrame {
         int height = 350;
 
         // Add panels to Content Pane
+        getContentPane().add(profilePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(displayX, displayY, width, height));
         getContentPane().add(userPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(displayX, displayY, width, height));
         getContentPane().add(bookingPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(displayX, displayY, width, height));
         getContentPane().add(menuPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(displayX, displayY, width, height));
@@ -81,6 +84,8 @@ public final class DashboardForm extends javax.swing.JFrame {
         }
 
         // Layering
+        getContentPane().setComponentZOrder(profilePanel, 0); 
+        getContentPane().setComponentZOrder(Background, getContentPane().getComponentCount() - 1);    
         getContentPane().setComponentZOrder(btnExit, 0);
         getContentPane().setComponentZOrder(btnUser, 0);
         getContentPane().setComponentZOrder(btnLogout, 0);
@@ -90,6 +95,8 @@ public final class DashboardForm extends javax.swing.JFrame {
     }
 
     public void hideAllPanels() {
+        Profile.setVisible(false);
+        profilePanel.setVisible(false);
         userPanel.setVisible(false);
         bookingPanel.setVisible(false);
         menuPanel.setVisible(false);
@@ -120,6 +127,7 @@ public final class DashboardForm extends javax.swing.JFrame {
         bookingPanel.setVisible(false);
         menuPanel.setVisible(false);
         eventPanel.setVisible(false);
+        profilePanel.setVisible(false); // Add this line
 
         if (!wasVisible) {
             targetPanel.setVisible(true);
@@ -129,10 +137,12 @@ public final class DashboardForm extends javax.swing.JFrame {
             if (targetPanel instanceof MenuRecords) ((MenuRecords)targetPanel).loadMenuData();
             if (targetPanel instanceof EventRecords) ((EventRecords)targetPanel).loadEventData();
             if (targetPanel instanceof UserRecords) ((UserRecords)targetPanel).loadUserData();
+            if (targetPanel instanceof Profile) ((Profile)targetPanel).loadUserProfile(currentUsername);    
         } else {
             Book.setVisible(true);
         }
         repaint();
+        revalidate();
     }
 
     public void showLogin() {
@@ -149,9 +159,11 @@ public final class DashboardForm extends javax.swing.JFrame {
         repaint();
     }
 
-    public void loginSuccess(String role) {
+    public void loginSuccess(String username,String role) {
+        this.currentUsername = username;
         this.userRole = role;
-        hideAllPanels(); 
+        hideAllPanels();
+        Profile.setVisible(true);
         Book1.setVisible(false);
         Book.setVisible(true); 
         btnLogout.setVisible(true);
@@ -186,18 +198,19 @@ public final class DashboardForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Profile = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
         BOOK = new javax.swing.JButton();
         EVENT = new javax.swing.JButton();
         CONTACTUS = new javax.swing.JButton();
         MENU = new javax.swing.JButton();
-        Book1 = new javax.swing.JLabel();
         Book = new javax.swing.JLabel();
         btnUser = new javax.swing.JButton();
         User = new javax.swing.JLabel();
         User1 = new javax.swing.JLabel();
         btnLogout = new javax.swing.JButton();
         bg2 = new javax.swing.JLabel();
+        Book1 = new javax.swing.JLabel();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -205,107 +218,188 @@ public final class DashboardForm extends javax.swing.JFrame {
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btnExit.setFont(new java.awt.Font("Serif", 1, 24)); 
+        Profile.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
+        Profile.setForeground(new java.awt.Color(255, 255, 255));
+        Profile.setText("PROFILE");
+        Profile.setBorderPainted(false);
+        Profile.setContentAreaFilled(false);
+        Profile.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Profile.setFocusPainted(false);
+        Profile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ProfileMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ProfileMouseExited(evt);
+            }
+        });
+        Profile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ProfileActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Profile, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 10, 120, 40));
+
+        btnExit.setFont(new java.awt.Font("Serif", 1, 24)); // NOI18N
         btnExit.setForeground(new java.awt.Color(255, 255, 255));
         btnExit.setText("X");
+        btnExit.setBorderPainted(false);
         btnExit.setContentAreaFilled(false);
         btnExit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnExit.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) { btnExitMouseEntered(evt); }
-            public void mouseExited(java.awt.event.MouseEvent evt) { btnExitMouseExited(evt); }
-        });
+        btnExit.setFocusPainted(false);
         btnExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) { btnExitActionPerformed(evt); }
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
         });
         getContentPane().add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 10, 50, 40));
 
-        BOOK.setFont(new java.awt.Font("Serif", 1, 18)); 
+        BOOK.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
         BOOK.setForeground(new java.awt.Color(255, 255, 255));
         BOOK.setText("BOOKING");
+        BOOK.setBorderPainted(false);
         BOOK.setContentAreaFilled(false);
+        BOOK.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        BOOK.setFocusPainted(false);
         BOOK.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) { BOOKMouseEntered(evt); }
-            public void mouseExited(java.awt.event.MouseEvent evt) { BOOKMouseExited(evt); }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                BOOKMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                BOOKMouseExited(evt);
+            }
         });
         BOOK.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) { BOOKActionPerformed(evt); }
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BOOKActionPerformed(evt);
+            }
         });
         getContentPane().add(BOOK, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, 130, 40));
 
-        EVENT.setFont(new java.awt.Font("Serif", 1, 18)); 
+        EVENT.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
         EVENT.setForeground(new java.awt.Color(255, 255, 255));
         EVENT.setText("EVENT");
+        EVENT.setBorderPainted(false);
         EVENT.setContentAreaFilled(false);
+        EVENT.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        EVENT.setFocusPainted(false);
         EVENT.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) { EVENTMouseEntered(evt); }
-            public void mouseExited(java.awt.event.MouseEvent evt) { EVENTMouseExited(evt); }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                EVENTMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                EVENTMouseExited(evt);
+            }
         });
         EVENT.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) { EVENTActionPerformed(evt); }
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EVENTActionPerformed(evt);
+            }
         });
         getContentPane().add(EVENT, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, 100, 40));
 
-        CONTACTUS.setFont(new java.awt.Font("Serif", 1, 18)); 
+        CONTACTUS.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
         CONTACTUS.setForeground(new java.awt.Color(255, 255, 255));
         CONTACTUS.setText("CONTACT US");
+        CONTACTUS.setBorderPainted(false);
         CONTACTUS.setContentAreaFilled(false);
+        CONTACTUS.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        CONTACTUS.setFocusPainted(false);
         CONTACTUS.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) { CONTACTUSMouseEntered(evt); }
-            public void mouseExited(java.awt.event.MouseEvent evt) { CONTACTUSMouseExited(evt); }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                CONTACTUSMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                CONTACTUSMouseExited(evt);
+            }
         });
         getContentPane().add(CONTACTUS, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 10, 150, 40));
 
-        MENU.setFont(new java.awt.Font("Serif", 1, 18)); 
+        MENU.setFont(new java.awt.Font("Serif", 1, 18)); // NOI18N
         MENU.setForeground(new java.awt.Color(255, 255, 255));
         MENU.setText("MENU");
+        MENU.setBorderPainted(false);
         MENU.setContentAreaFilled(false);
+        MENU.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        MENU.setFocusPainted(false);
         MENU.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) { MENUMouseEntered(evt); }
-            public void mouseExited(java.awt.event.MouseEvent evt) { MENUMouseExited(evt); }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                MENUMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                MENUMouseExited(evt);
+            }
         });
         MENU.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) { MENUActionPerformed(evt); }
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MENUActionPerformed(evt);
+            }
         });
         getContentPane().add(MENU, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 90, 40));
 
-        btnLogout.setFont(new java.awt.Font("Visitor TT1 BRK", 1, 18)); 
-        btnLogout.setForeground(new java.awt.Color(255, 102, 102));
-        btnLogout.setText("LOGOUT");
-        btnLogout.setContentAreaFilled(false);
-        btnLogout.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) { btnLogoutMouseEntered(evt); }
-            public void mouseExited(java.awt.event.MouseEvent evt) { btnLogoutMouseExited(evt); }
-        });
-        btnLogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) { btnLogoutActionPerformed(evt); }
-        });
-        getContentPane().add(btnLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 360, 120, 50));
-
-        // Background and Logos labels (simplified for code brevity)
-        Book1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/LOGO.png"))); 
-        getContentPane().add(Book1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-60, 60, 620, 340));
-        Book.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/LOGO.png"))); 
+        Book.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/LOGO.png"))); // NOI18N
         getContentPane().add(Book, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 90, 620, 340));
-        
+
+        btnUser.setBorderPainted(false);
         btnUser.setContentAreaFilled(false);
+        btnUser.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUser.setFocusPainted(false);
         btnUser.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) { btnUserMouseClicked(evt); }
-            public void mouseEntered(java.awt.event.MouseEvent evt) { btnUserMouseEntered(evt); }
-            public void mouseExited(java.awt.event.MouseEvent evt) { btnUserMouseExited(evt); }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnUserMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnUserMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnUserMouseExited(evt);
+            }
         });
         getContentPane().add(btnUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 300, 120, 40));
 
-        User.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/User.gif"))); 
+        User.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/User.gif"))); // NOI18N
         getContentPane().add(User, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 120, 60));
-        User1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/User.png"))); 
+
+        User1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/User.png"))); // NOI18N
         getContentPane().add(User1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 180, 60));
-        bg2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/login.image/bg1.png"))); 
+
+        btnLogout.setFont(new java.awt.Font("Visitor TT1 BRK", 1, 18)); // NOI18N
+        btnLogout.setForeground(new java.awt.Color(255, 102, 102));
+        btnLogout.setText("LOGOUT");
+        btnLogout.setBorderPainted(false);
+        btnLogout.setContentAreaFilled(false);
+        btnLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLogout.setFocusPainted(false);
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 360, 120, 50));
+
+        bg2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/login.image/bg1.png"))); // NOI18N
         getContentPane().add(bg2, new org.netbeans.lib.awtextra.AbsoluteConstraints(-90, 70, 350, 340));
-        Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/Background1.png"))); 
+
+        Book1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/LOGO.png"))); // NOI18N
+        getContentPane().add(Book1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-60, 60, 620, 340));
+
+        Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Dashboard.image/Background1.png"))); // NOI18N
         getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 830, 430));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ProfileMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ProfileMouseEntered
+        runAnimation(Profile, true);
+    }//GEN-LAST:event_ProfileMouseEntered
+
+    private void ProfileMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ProfileMouseExited
+        runAnimation(Profile, false);
+    }//GEN-LAST:event_ProfileMouseExited
+
+    private void ProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProfileActionPerformed
+        showPanel(profilePanel);
+    }//GEN-LAST:event_ProfileActionPerformed
 
     // --- EVENT HANDLERS ---
     private void btnExitMouseEntered(java.awt.event.MouseEvent evt) { btnExit.setForeground(new Color(255, 102, 0)); }
@@ -349,6 +443,7 @@ public final class DashboardForm extends javax.swing.JFrame {
     private javax.swing.JButton CONTACTUS;
     private javax.swing.JButton EVENT;
     private javax.swing.JButton MENU;
+    private javax.swing.JButton Profile;
     private javax.swing.JLabel User;
     private javax.swing.JLabel User1;
     private javax.swing.JLabel bg2;
